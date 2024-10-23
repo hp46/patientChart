@@ -1,10 +1,10 @@
 import React, { useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import { Formik, Form, Field, ErrorMessage } from "formik"
 import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import "react-datepicker/dist/react-datepicker.css";
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
+
 import FormikContainerLevel from "../components/FormikContainerLevel";
 
 function PatientsDetail () {
@@ -12,6 +12,8 @@ function PatientsDetail () {
     let { id } = useParams();
     const [patientObject, setPatientObject] = useState({});
     const [levels, setlevels] = useState([]);
+    const [open, setOpen] = useState(false)
+    const handleClose = () => setOpen(false)
 
 
     useEffect(() => {
@@ -37,17 +39,23 @@ function PatientsDetail () {
         axios.delete(`http://localhost:3001/levels/${id}`)
         .then(()=>{
             console.log(`Deleted post with ID ${patientObject.id}`);
+            setOpen(true);
         })
     }
     return(
         <section className="flex flex-col h-dvh">
             <div className="pt-10 pb-10">
                  <div className="uppercase font-bold place-content-evenly ">
-                    {patientObject.id} | {patientObject.firstName} {patientObject.lastName}
+                    <h1>
+                        Patient ID: {patientObject.identificationKey}
+                    </h1> 
+                    <h1>
+                        Patient Name: {patientObject.firstName} {patientObject.lastName}
+                    </h1>
                 </div>
-                <div className=" uppercase">
+                <div className=" flex flex-row flex-wrap uppercase place-content-between w-4/5">
                     <p>
-                        Sex:{patientObject.sex}
+                        Sex: {patientObject.sex}
                     </p>  
                     <p>
                         Location: {patientObject.location}
@@ -70,31 +78,53 @@ function PatientsDetail () {
                         <div className="flex pl-10 pb-10  ">
                             <div className=" h-1/2">
                                 <p className="" key={key}>{level.id}</p>
-                                {/* <p>{level.createdAt}</p> */}
                                 <div className="">    
-                                    <p>
+                                    <p key={key}>
                                         {level.bloodSugarLevel} | Blood Sugar Level
                                     </p>
-                                    <p>
+                                    <p key={key}>
                                         {level.hba1c} | Hba1c
                                     </p>
-                                    <p>
+                                    <p key={key}>
                                         {level.weight} | Weight
                                     </p>
-                                    <p>
+                                    <p key={key}>
                                         {level.cholesterol} | Cholesterol Level
                                     </p>
-                                    <p>
+                                    <p key={key}>
                                         {level.hemoglobin} | Hemoglobin Level
                                     </p>
-                                    <p>
+                                    <p key={key}>
                                         {level.systolicBloodPressure} / {level.diastolicBloodPressure} | Blood Pressure
                                     </p>
-                                    <button 
-                                    className="hover:text-red-600"
-                                    onClick={() => deleteLevel(level.id)}>
-                                        x
-                                    </button>
+                                    <div>
+                                        <button 
+                                        className="hover:text-red-600"
+                                        onClick={() => navigate(0)}>
+                                            x
+                                        </button>
+                                        <Modal
+                                            className="absolute inset-0  mx-auto my-auto"
+                                            open={open}
+                                            onClose={handleClose}
+                                        >
+                                            <Box
+                                            className="absolute inset-0  mx-auto my-auto h-30 w-1/2 bg-white"
+                                            >      
+                                                <div className="flex flex-col h-full items-center justify-center">
+                                                    <h1 className="uppercase w-1/2 decoration-4 text-5xl">
+                                                        This Level has been sucessfully deleted!
+                                                    </h1>
+                                                    <button
+                                                        onClick={() => navigate(`/patientsinfo/${id}`)}
+                                                        className="text-white bg-gradient-to-br uppercase from-purple-600 to-blue-500 hover:bg-gradient-to-bl hover:border-slate-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-10 py-4 text-center me-2 mt-5 "
+                                    >
+                                                            Continue to Profile
+                                                    </button>
+                                                </div>
+                                            </Box>        
+                                        </Modal>
+                                    </div>
                                 </div>
                             </div>
                         </div>

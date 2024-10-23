@@ -1,6 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
 
     const Info = sequelize.define("Info", {
+        identificationKey: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+
         firstName: {
             type: DataTypes.STRING,
             allowNull: false,

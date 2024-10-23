@@ -4,6 +4,7 @@ import TextArea from './TextArea'
 import Select from './Select'
 import Radio from './Radio'
 import DatePicker from './DatePicker'
+import Id from './Id'
 
 
 function FormikControl(props) {
@@ -11,6 +12,8 @@ function FormikControl(props) {
     switch(control) {
         case 'input': 
             return <Input {...rest} />
+        case 'id': 
+            return <Id {...rest} />    
         case 'textarea':
             return <TextArea {...rest} />
         case 'select':

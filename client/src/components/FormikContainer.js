@@ -1,7 +1,8 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage} from "formik"
+import { Formik, Form, Field} from "formik"
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { v4 as uuid } from "uuid"
 import * as Yup from 'yup'
 import "react-datepicker/dist/react-datepicker.css";
 import FormikControl from "./FormikControl";
@@ -12,6 +13,9 @@ import Box from '@mui/material/Box'
 
 function FormikContainer () {
     let navigate = useNavigate(); 
+    const uniqueId = uuid()
+    const shortId = uniqueId.slice(0,8);
+
     const [length, setLenght] = useState([])
     const [open, setOpen] = useState(false)
     const handleClose = () => setOpen(false)
@@ -35,6 +39,7 @@ function FormikContainer () {
     ]
 
     const initialValues = {
+        identificationKey: shortId,
         firstName: "",
         lastName: "",
         sex: "",
@@ -47,6 +52,7 @@ function FormikContainer () {
     }
 
     const validationSchema = Yup.object({
+        identificationKey: Yup.string().required("ID requried*"),
         firstName: Yup.string().required("First Name requried*"),
         lastName:Yup.string().required("Last Name requried*"),
         sex: Yup.string().required("Select Male or Female"),
@@ -62,7 +68,6 @@ function FormikContainer () {
             console.log("it worked")
             axios.get("http://localhost:3001/patientsinfo").then((response) => {
                 setLenght(response.data.length);
-                // console.log(response.data.length)
               })
             console.log("it worked")
             setOpen(true);
@@ -78,6 +83,17 @@ function FormikContainer () {
             {
             formik => 
             <Form className="flex flex-col w-5/6">
+                {/* <div className="">
+                    <label
+                    >Identification Number</label>
+                    <Field
+                    id="identificationKey" 
+                    name="identificationKey" 
+                    value={shortId}
+                    className="hover:border-gray-900 border-2 border-gray-300 text-gray-900 text-sm rounded-lg block p-1 uppercase" 
+                    />
+                </div> */}
+                {/* <FormikControl control='id' type='identificationKey' label='ID' name='identificationKey'/> */}
                 <FormikControl control='input' type='firstName' label='First Name' name="firstName"/>
                 <FormikControl control='input' type='lastName' label='Last Name' name="lastName"/>
                 <FormikControl control='input' type='phoneNumber' label='Phone Number #' name="phoneNumber"/>
@@ -96,15 +112,18 @@ function FormikContainer () {
                         Submit Patient
                     </button>
                     <Modal
-                        className="absolute inset-0  mx-auto my-auto"
+                        className="absolute inset-0  mx-auto my-auto p-10"
                         open={open}
                         onClose={handleClose}
                     >
                         <Box
-                        className="absolute inset-0  mx-auto my-auto h-30 w-1/2 bg-white"
+                        className="absolute inset-0  mx-auto my-auto h-1/2 w-1/2 bg-white"
                         >      
                             <div className="flex flex-col h-full items-center justify-center">
-                                <h1 className="uppercase w-1/2 decoration-4 text-5xl">
+                                <h1 className="uppercase w-1/2 decoration-4 text-3xl">
+
+                                </h1>
+                                <h1 className="uppercase w-1/2 decoration-4 text-2xl">
                                     This Patient have been sucessfully registered!
                                 </h1>
                                 <button
